@@ -7,12 +7,10 @@ Uma aplicação web interativa e responsiva para gerenciamento de tarefas, desen
 ## 📌 Funcionalidades
 
 ✅ Adicionar uma nova tarefa
-✅ Listar todas as tarefas
+✅ Listagem de todas as tarefas
 ✅ Marcar tarefa como **concluída**
-✅ Marcar tarefa como **não concluída**
 ✅ Remover tarefa
 ✅ Interface web moderna e responsiva
-✅ Botão para atualizar lista manualmente
 ✅ Notificações e feedbacks visuais
 
 ---
