@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Tarefas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Lista de Tarefas</h1>
+        <form id="task-form">
+            <input type="text" id="task-input" placeholder="Nova tarefa..." required />
+            <button type="submit">Adicionar</button>
+        </form>
+        <ul id="task-list"></ul>
+    </div>
+
+    <script>
+        const taskList = document.getElementById('task-list');
+        const taskForm = document.getElementById('task-form');
+        const taskInput = document.getElementById('task-input');
+
+        async function fetchTasks() {
+            const response = await fetch('/tasks');
+            const tasks = await response.json();
+            taskList.innerHTML = '';
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = task.completed ? 'completed' : '';
+                li.innerHTML = `
+                    <span>${task.title}</span>
+                    <div>
+                        ${!task.completed ? `<button onclick="completeTask(${task.id})">✔️</button>` : ''}
+                        <button onclick="deleteTask(${task.id})">🗑️</button>
+                    </div>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+
+        async function addTask(title) {
+            await fetch('/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title })
+            });
+            taskInput.value = '';
+            fetchTasks();
+        }
+
+        async function completeTask(id) {
+            await fetch(`/tasks/${id}`, { method: 'PUT' });
+            fetchTasks();
+        }
+
+        async function deleteTask(id) {
+            await fetch(`/tasks/${id}`, { method: 'DELETE' });
+            fetchTasks();
+        }
+
+        taskForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = taskInput.value.trim();
+            if (title) addTask(title);
+        });
+
+        fetchTasks();
+    </script>
+</body>
+</html>

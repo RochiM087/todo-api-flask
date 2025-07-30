@@ -1,0 +1,26 @@
+# Banco de dados SQLite
+*.db
+
+# Ambiente virtual
+venv/
+ENV/
+env/
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Arquivos temporários de editor
+*.swp
+*.swo
+*.bak
+*~
+
+# VSCode
+.vscode/
+
+# Sistema
+.DS_Store
+Thumbs.db
