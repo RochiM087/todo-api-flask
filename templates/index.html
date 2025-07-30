@@ -3,30 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista de Tarefas</title>
+
+    <!-- Linka o CSS externo localizado na pasta /static -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
         <h1>📝 Lista de Tarefas</h1>
+
+        <!-- Formulário de envio de nova tarefa -->
         <form id="task-form">
             <input type="text" id="task-input" placeholder="Nova tarefa..." required />
             <button type="submit">Adicionar</button>
         </form>
+
+        <!-- Lista de tarefas será gerada dinamicamente aqui -->
         <ul id="task-list"></ul>
     </div>
 
+    <!-- Script principal que faz a interface interagir com a API Flask -->
     <script>
+        // Seleciona os elementos do DOM
         const taskList = document.getElementById('task-list');
         const taskForm = document.getElementById('task-form');
         const taskInput = document.getElementById('task-input');
 
+        // Função para buscar as tarefas do backend e exibi-las na interface
         async function fetchTasks() {
-            const response = await fetch('/tasks');
-            const tasks = await response.json();
-            taskList.innerHTML = '';
+            const response = await fetch('/tasks');         // Faz GET na API
+            const tasks = await response.json();            // Converte resposta para JSON
+            taskList.innerHTML = '';                        // Limpa a lista atual
+
+            // Para cada tarefa retornada, cria um item visual na tela
             tasks.forEach(task => {
                 const li = document.createElement('li');
-                li.className = task.completed ? 'completed' : '';
+                li.className = task.completed ? 'completed' : '';  // Aplica estilo se estiver concluída
+
+                // Monta o conteúdo da tarefa com botões de ação
                 li.innerHTML = `
                     <span>${task.title}</span>
                     <div>
@@ -38,32 +51,37 @@
             });
         }
 
+        // Envia nova tarefa para a API via POST
         async function addTask(title) {
             await fetch('/tasks', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title })
             });
-            taskInput.value = '';
-            fetchTasks();
+            taskInput.value = '';  // Limpa o campo de entrada
+            fetchTasks();          // Recarrega a lista atualizada
         }
 
+        // Marca uma tarefa como concluída via PUT
         async function completeTask(id) {
             await fetch(`/tasks/${id}`, { method: 'PUT' });
             fetchTasks();
         }
 
+        // Remove uma tarefa via DELETE
         async function deleteTask(id) {
             await fetch(`/tasks/${id}`, { method: 'DELETE' });
             fetchTasks();
         }
 
+        // Quando o formulário for enviado, adiciona uma nova tarefa
         taskForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+            e.preventDefault();  // Impede o recarregamento da página
             const title = taskInput.value.trim();
-            if (title) addTask(title);
+            if (title) addTask(title);  // Adiciona se o campo não estiver vazio
         });
 
+        // Carrega as tarefas assim que a página for carregada
         fetchTasks();
     </script>
 </body>
